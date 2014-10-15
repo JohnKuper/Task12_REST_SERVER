@@ -6,11 +6,11 @@
 
 	<persistence-unit name="AutoShowDataBase"
 		transaction-type="RESOURCE_LOCAL">
-		<class>com.johnkuper.epam.entity.Car</class>
-		<class>com.johnkuper.epam.entity.Customer</class>
-		<class>com.johnkuper.epam.entity.Merchant</class>
-		<class>com.johnkuper.epam.entity.Sale</class>
-		<class>com.johnkuper.epam.entity.Store</class>
+		<class>com.johnkuper.epam.jpa.entity.Car</class>
+		<class>com.johnkuper.epam.jpa.entity.Customer</class>
+		<class>com.johnkuper.epam.jpa.entity.Merchant</class>
+		<class>com.johnkuper.epam.jpa.entity.Sale</class>
+		<class>com.johnkuper.epam.jpa.entity.Store</class>
 
 		<properties>
 			<property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
