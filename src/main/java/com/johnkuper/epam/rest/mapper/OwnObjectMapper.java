@@ -15,7 +15,7 @@ public class OwnObjectMapper extends ObjectMapper {
 
 	final static Logger logger = LoggerFactory.getLogger(OwnObjectMapper.class);
 
-	public String jsonFromErrorMessage(int statusCode, String message)
+	public String jsonFromSpecialMessage(int statusCode, String message)
 			throws JsonGenerationException, JsonMappingException, IOException {
 
 		OwnJSONStatus ownStatus = new OwnJSONStatus(statusCode, message);
@@ -40,5 +40,6 @@ public class OwnObjectMapper extends ObjectMapper {
 
 		return str;
 	}
+	
 
 }

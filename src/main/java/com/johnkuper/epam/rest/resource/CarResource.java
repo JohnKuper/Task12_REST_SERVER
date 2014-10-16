@@ -3,10 +3,14 @@ package com.johnkuper.epam.rest.resource;
 import java.io.IOException;
 import java.util.List;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import org.codehaus.jackson.JsonGenerationException;
@@ -24,21 +28,22 @@ public class CarResource {
 
 	OwnObjectMapper mapper = new OwnObjectMapper();
 	JPAServiceImpl service = new JPAServiceImpl();
-	final static Logger logger = LoggerFactory.getLogger(CarResource.class);
+	private final static String CAR_JSON_START = "{\"cars\":";
+	final static Logger logger = LoggerFactory.getLogger("JohnKuper");
 
 	@GET
-	@Path("/findCarByName/{name}")
-	public Response getCarByName(@PathParam("name") String name) {
+	@Path("/findByName/{name}")
+	public Response findCarByName(@PathParam("name") String name) {
 
 		List<CarWeb> cars = service.findCarByName(name);
-		String carJSON = "{\"cars\":";
+		String carJSON = CAR_JSON_START;
 		try {
 			if (cars.size() == 1) {
 				carJSON += mapper.writeValueAsString(cars.get(0));
 			} else if (cars.size() > 1) {
 				carJSON += mapper.writeValueAsString(cars);
 			} else {
-				String jsonError = mapper.jsonFromErrorMessage(200,
+				String jsonError = mapper.jsonFromSpecialMessage(204,
 						"Car with name = " + name + " not exists in database");
 				return Response.ok(jsonError).build();
 			}
@@ -57,8 +62,8 @@ public class CarResource {
 	}
 
 	@GET
-	@Path("/findOne/{id}")
-	public Response getCarByID(@PathParam("id") int id) {
+	@Path("/findOne/{id: [0-9]*}")
+	public Response findOne(@PathParam("id") int id) {
 
 		if (id <= 0) {
 			return Response.status(400).entity("ID should be 1 or more.")
@@ -66,21 +71,109 @@ public class CarResource {
 
 		}
 
-		String carJSON = null;
-		CarWeb car = service.findCar(id);
+		String carJSON = CAR_JSON_START;
 		try {
+			CarWeb car = service.findCar(id);
+			if (car == null) {
+				String jsonError = mapper.jsonFromSpecialMessage(204,
+						"Car with ID = " + id + " not exists in database");
+				return Response.ok(jsonError).build();
+			}
 
-			carJSON = mapper.writeValueAsString(car);
+			carJSON += mapper.writeValueAsString(car);
+			carJSON += mapper.jsonWithNoErrors();
 
 		} catch (JsonGenerationException e) {
-			logger.error("Error", e);
+			logger.error("Error during JSON writing: ", e);
 		} catch (JsonMappingException e) {
-			logger.error("Error", e);
+			logger.error("Error during JSON mapping: ", e);
 		} catch (IOException e) {
-			logger.error("Error", e);
+			logger.error("IOException: ", e);
 		}
 
 		return Response.ok(carJSON).build();
 	}
+
+	@POST
+	@Path("/create")
+	@Consumes("application/json")
+	public Response createCar(String carJSON) {
+
+		CarWeb car = null;
+		String restStatus = "";
+		try {
+			car = mapper.readValue(carJSON, CarWeb.class);
+			logger.debug("Car from JSON: {}", car);
+			String serviceStatus = service.createCar(car);
+			restStatus = mapper.jsonFromSpecialMessage(200, serviceStatus);
+		} catch (JsonGenerationException e) {
+			logger.error("Error during JSON writing: ", e);
+		} catch (JsonMappingException e) {
+			logger.error("Error during JSON mapping: ", e);
+		} catch (IOException e) {
+			logger.error("IOException: ", e);
+		}
+
+		return Response.ok(restStatus).build();
+	}
+
+	@POST
+	@Path("/update")
+	@Consumes("application/json")
+	public Response updateCar(String carJSON) {
+
+		CarWeb car = null;
+		String restStatus = "";
+		try {
+			car = mapper.readValue(carJSON, CarWeb.class);
+			logger.debug("Car from JSON: {}", car);
+			String serviceStatus = service.updateCar(car);
+			restStatus = mapper.jsonFromSpecialMessage(200, serviceStatus);
+		} catch (JsonGenerationException e) {
+			logger.error("Error during JSON writing: ", e);
+		} catch (JsonMappingException e) {
+			logger.error("Error during JSON mapping: ", e);
+		} catch (IOException e) {
+			logger.error("IOException: ", e);
+		}
+
+		return Response.ok(restStatus).build();
+
+	}
+
+	@GET
+	@Path("/findByMotorPower")
+	public Response findByMotorPower(
+			@DefaultValue("0") @QueryParam("min") int minPower,
+			@DefaultValue("1000") @QueryParam("max") int maxPower) {
+
+		List<CarWeb> cars = service.findCarsByMotorPower(minPower, maxPower);
+		String carJSON = CAR_JSON_START;
+		try {
+			if (cars.size() == 1) {
+				carJSON += mapper.writeValueAsString(cars.get(0));
+			} else if (cars.size() > 1) {
+				carJSON += mapper.writeValueAsString(cars);
+			} else {
+				String jsonError = mapper.jsonFromSpecialMessage(204,
+						"No cars between motorpower " + minPower + " and "
+								+ maxPower + " in database");
+				return Response.ok(jsonError).build();
+			}
+
+		} catch (JsonGenerationException e) {
+			logger.error("Error during JSON writing: ", e);
+		} catch (JsonMappingException e) {
+			logger.error("Error during JSON mapping: ", e);
+		} catch (IOException e) {
+			logger.error("IOException: ", e);
+		}
+
+		carJSON += mapper.jsonWithNoErrors();
+		return Response.ok(carJSON).build();
+
+	}
+
+	
 
 }

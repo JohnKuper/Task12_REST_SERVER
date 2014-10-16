@@ -1,6 +1,5 @@
 package com.johnkuper.epam.jpaservice.model;
 
-
 public class MerchantWeb {
 
 	private int id;
@@ -24,8 +23,6 @@ public class MerchantWeb {
 				+ "; merchSurname = " + merchSurname + "; merchPatronymic = "
 				+ merchPatronymic + "}";
 	}
-
-	
 
 	public int getId() {
 		return id;

@@ -6,8 +6,11 @@ import java.util.List;
 import com.johnkuper.epam.jpa.domain.StoreDomain;
 import com.johnkuper.epam.jpa.entity.Store;
 
-public interface StoreDAO extends GenericDAO<Store,StoreDomain,Integer> {
+public interface StoreDAO extends GenericDAO<Store, StoreDomain, Integer> {
 
-	List<StoreDomain> findItemsBetweenPrices(BigDecimal maxprice, BigDecimal minprice);
+	List<StoreDomain> findItemsBetweenPrices(BigDecimal maxprice,
+			BigDecimal minprice);
+
+	StoreDomain findStoreByCarID(int id);
 
 }
