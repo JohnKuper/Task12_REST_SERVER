@@ -230,7 +230,6 @@ public class JPAServiceImpl implements JPAService {
 		saleDaoImpl.create(saleDomain);
 
 		String status = "New sale was created";
-		logger.debug("{}", saleWeb);
 
 		return status;
 
@@ -256,6 +255,30 @@ public class JPAServiceImpl implements JPAService {
 		List<StoreWeb> webStores = getWebStoresFromDomainStores(domainStorses);
 		return webStores;
 
+	}
+
+	@Override
+	public StoreWeb findStoreByCarID(int id) {
+
+		logger.debug(calledMethod("findStoreByCarID"));
+		checkId(id);
+		StoreDomain storeDomain = storeDaoImpl.findStoreByCarID(id);
+		StoreWeb storeWeb = mapper.map(storeDomain, StoreWeb.class);
+		logger.debug("StoreWeb: {}", storeWeb);
+
+		return storeWeb;
+	}
+
+	@Override
+	public String updateStore(StoreWeb store) {
+
+		logger.debug(calledMethod("updateStore"));
+		StoreDomain storeDomain = mapper.map(store, StoreDomain.class);
+		storeDaoImpl.update(storeDomain);
+
+		return String
+				.format("Information about store with ID = %s was successfully updated",
+						storeDomain.getId());
 	}
 
 }

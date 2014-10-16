@@ -16,7 +16,7 @@ public class StoreDAOImpl extends GenericDAOImpl<Store, StoreDomain, Integer>
 	@Override
 	public List<StoreDomain> findItemsBetweenPrices(BigDecimal minprice,
 			BigDecimal maxprice) {
-		
+
 		logger.debug("--- Start 'findItemsBetweenPrices' method for Store entity --- ");
 
 		TypedQuery<Store> query = entityManager
@@ -37,6 +37,25 @@ public class StoreDAOImpl extends GenericDAOImpl<Store, StoreDomain, Integer>
 		}
 		return domainItems;
 	}
-	
+
+	@Override
+	public StoreDomain findStoreByCarID(int id) {
+
+		logger.debug(
+				"--- Start 'findStoreByCarID' method for Store entity with ID = {} --- ",
+				id);
+		TypedQuery<Store> query = entityManager.createQuery(
+				"SELECT s FROM Store s WHERE s.car.id = :carID", Store.class);
+		query.setParameter("carID", id);
+		Store store = query.getSingleResult();
+		if (store != null) {
+			StoreDomain storeDomain = mapper.map(store, StoreDomain.class);
+			logger.debug("{}", storeDomain);
+			return storeDomain;
+		}
+
+		return null;
+
+	}
 
 }

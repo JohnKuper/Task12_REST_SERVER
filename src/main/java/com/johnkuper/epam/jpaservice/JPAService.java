@@ -41,4 +41,8 @@ public interface JPAService {
 	public List<StoreWeb> findCarsBetweenPrices(BigDecimal minPrice,
 			BigDecimal maxPrice);
 
+	public StoreWeb findStoreByCarID(int id);
+
+	public String updateStore(StoreWeb store);
+
 }
