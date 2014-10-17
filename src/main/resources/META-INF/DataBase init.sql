@@ -65,8 +65,7 @@ GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' IDENTIFIED BY 'root' WITH GRAN
 
 insert into cars(name,model,modification,color)
 values('Audi','R5','400','Красный'),
-	  ('Audi','R6','666','Мокрый асфальт'),
-	  ('Audi','R8','888','Оранжевый'),	
+	  ('Audi','R6','555','Бордовый'),
 	  ('BMW','X3','250','Белый'),
 	  ('Toyota','Corolla','300','Черный'),
 	  ('Lada','Granta','150','Синий'),
