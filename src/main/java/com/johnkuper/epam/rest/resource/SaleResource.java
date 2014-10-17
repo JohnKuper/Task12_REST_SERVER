@@ -78,7 +78,11 @@ public class SaleResource {
 			}
 
 		} catch (IOException e) {
-			logger.error("IOException during buyCar: ", e);
+			String error = mapper.jsonFromSpecialMessage(400,
+					"Error during parse JSON. Please fix it");
+			logger.error("IOException during 'buyCar': ", e);
+			return Response.status(400).entity(error).build();
+
 		}
 
 		return Response.ok(statusJSON).build();

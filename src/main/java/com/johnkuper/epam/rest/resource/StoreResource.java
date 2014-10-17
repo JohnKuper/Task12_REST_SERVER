@@ -11,8 +11,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,12 +44,12 @@ public class StoreResource {
 				return Response.ok(jsonError).build();
 			}
 
-		} catch (JsonGenerationException e) {
-			logger.error("Error during JSON writing: ", e);
-		} catch (JsonMappingException e) {
-			logger.error("Error during JSON mapping: ", e);
 		} catch (IOException e) {
-			logger.error("IOException: ", e);
+			String error = mapper.jsonFromSpecialMessage(400,
+					"Error during proccess request. Please fix it");
+			logger.error("IOException during 'getAll' (store): ", e);
+			return Response.status(400).entity(error).build();
+
 		}
 
 		carJSON += mapper.jsonWithNoErrors();
@@ -80,12 +78,12 @@ public class StoreResource {
 				return Response.ok(jsonError).build();
 			}
 
-		} catch (JsonGenerationException e) {
-			logger.error("Error during JSON writing: ", e);
-		} catch (JsonMappingException e) {
-			logger.error("Error during JSON mapping: ", e);
 		} catch (IOException e) {
-			logger.error("IOException: ", e);
+			String error = mapper.jsonFromSpecialMessage(400,
+					"Error during proccess request. Please fix it");
+			logger.error("IOException during 'findByPrice': ", e);
+			return Response.status(400).entity(error).build();
+
 		}
 
 		storeJSON += mapper.jsonWithNoErrors();

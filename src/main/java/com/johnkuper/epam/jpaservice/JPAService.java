@@ -21,8 +21,6 @@ public interface JPAService {
 
 	public List<CarWeb> findCarsByMotorPower(int minPower, int maxPower);
 
-	public List<StoreWeb> getAllCarsFromStore();
-
 	// Customer methods
 	public String createCustomer(CustomerWeb customer);
 
@@ -44,5 +42,7 @@ public interface JPAService {
 	public StoreWeb findStoreByCarID(int id);
 
 	public String updateStore(StoreWeb store);
+
+	public List<StoreWeb> getAllCarsFromStore();
 
 }

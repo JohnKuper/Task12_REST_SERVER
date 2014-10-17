@@ -13,8 +13,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,12 +46,12 @@ public class CarResource {
 				return Response.ok(jsonError).build();
 			}
 
-		} catch (JsonGenerationException e) {
-			logger.error("Error during JSON writing: ", e);
-		} catch (JsonMappingException e) {
-			logger.error("Error during JSON mapping: ", e);
 		} catch (IOException e) {
-			logger.error("IOException: ", e);
+			String error = mapper.jsonFromSpecialMessage(400,
+					"Error during proccess request. Please fix it");
+			logger.error("IOException during 'findCarByName': ", e);
+			return Response.status(400).entity(error).build();
+
 		}
 
 		carJSON += mapper.jsonWithNoErrors();
@@ -83,14 +81,13 @@ public class CarResource {
 			carJSON += mapper.writeValueAsString(car);
 			carJSON += mapper.jsonWithNoErrors();
 
-		} catch (JsonGenerationException e) {
-			logger.error("Error during JSON writing: ", e);
-		} catch (JsonMappingException e) {
-			logger.error("Error during JSON mapping: ", e);
 		} catch (IOException e) {
-			logger.error("IOException: ", e);
-		}
+			String error = mapper.jsonFromSpecialMessage(400,
+					"Error during proccess request. Please fix it");
+			logger.error("IOException during 'findOne' (car): ", e);
+			return Response.status(400).entity(error).build();
 
+		}
 		return Response.ok(carJSON).build();
 	}
 
@@ -106,12 +103,13 @@ public class CarResource {
 			logger.debug("Car from JSON: {}", car);
 			String serviceStatus = service.createCar(car);
 			restStatus = mapper.jsonFromSpecialMessage(200, serviceStatus);
-		} catch (JsonGenerationException e) {
-			logger.error("Error during JSON writing: ", e);
-		} catch (JsonMappingException e) {
-			logger.error("Error during JSON mapping: ", e);
+
 		} catch (IOException e) {
-			logger.error("IOException: ", e);
+			String error = mapper.jsonFromSpecialMessage(400,
+					"Error during parse JSON. Please fix it");
+			logger.error("IOException during 'createCar': ", e);
+			return Response.status(400).entity(error).build();
+
 		}
 
 		return Response.ok(restStatus).build();
@@ -129,12 +127,11 @@ public class CarResource {
 			logger.debug("Car from JSON: {}", car);
 			String serviceStatus = service.updateCar(car);
 			restStatus = mapper.jsonFromSpecialMessage(200, serviceStatus);
-		} catch (JsonGenerationException e) {
-			logger.error("Error during JSON writing: ", e);
-		} catch (JsonMappingException e) {
-			logger.error("Error during JSON mapping: ", e);
 		} catch (IOException e) {
-			logger.error("IOException: ", e);
+			String error = mapper.jsonFromSpecialMessage(400,
+					"Error during parse JSON. Please fix it");
+			logger.error("IOException during 'updateCar': ", e);
+			return Response.status(400).entity(error).build();
 		}
 
 		return Response.ok(restStatus).build();
@@ -161,19 +158,16 @@ public class CarResource {
 				return Response.ok(jsonError).build();
 			}
 
-		} catch (JsonGenerationException e) {
-			logger.error("Error during JSON writing: ", e);
-		} catch (JsonMappingException e) {
-			logger.error("Error during JSON mapping: ", e);
 		} catch (IOException e) {
-			logger.error("IOException: ", e);
+			String error = mapper.jsonFromSpecialMessage(400,
+					"Error during proccess request. Please fix it");
+			logger.error("IOException during 'findByMotorPower': ", e);
+			return Response.status(400).entity(error).build();
 		}
 
 		carJSON += mapper.jsonWithNoErrors();
 		return Response.ok(carJSON).build();
 
 	}
-
-	
 
 }

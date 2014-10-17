@@ -15,7 +15,7 @@ import com.johnkuper.epam.rest.resource.MerchantResource;
 import com.johnkuper.epam.rest.resource.SaleResource;
 import com.johnkuper.epam.rest.resource.StoreResource;
 
-public class App {
+public class ServerApp {
 
 	private static final URI BASE_URI = URI
 			.create("http://localhost:8080/base/");

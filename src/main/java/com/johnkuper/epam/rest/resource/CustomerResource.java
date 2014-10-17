@@ -10,8 +10,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,12 +38,12 @@ public class CustomerResource {
 			logger.debug("Customer from JSON: {}", customer);
 			String serviceStatus = service.createCustomer(customer);
 			restStatus = mapper.jsonFromSpecialMessage(200, serviceStatus);
-		} catch (JsonGenerationException e) {
-			logger.error("Error during JSON writing: ", e);
-		} catch (JsonMappingException e) {
-			logger.error("Error during JSON mapping: ", e);
 		} catch (IOException e) {
-			logger.error("IOException: ", e);
+			String error = mapper.jsonFromSpecialMessage(400,
+					"Error during parse JSON. Please fix it");
+			logger.error("IOException during 'createCustomer': ", e);
+			return Response.status(400).entity(error).build();
+
 		}
 
 		return Response.ok(restStatus).build();
@@ -73,12 +71,12 @@ public class CustomerResource {
 			customerJSON += mapper.writeValueAsString(customer);
 			customerJSON += mapper.jsonWithNoErrors();
 
-		} catch (JsonGenerationException e) {
-			logger.error("Error during JSON writing: ", e);
-		} catch (JsonMappingException e) {
-			logger.error("Error during JSON mapping: ", e);
 		} catch (IOException e) {
-			logger.error("IOException: ", e);
+			String error = mapper.jsonFromSpecialMessage(400,
+					"Error during proccess request. Please fix it");
+			logger.error("IOException during 'findOne' (customer): ", e);
+			return Response.status(400).entity(error).build();
+
 		}
 
 		return Response.ok(customerJSON).build();
